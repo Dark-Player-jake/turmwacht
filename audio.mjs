@@ -6,12 +6,12 @@ export function unlock() {
   if (!ctx) {
     const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
     if (!AC) return;
-    ctx = new AC();
+    try { ctx = new AC(); } catch { return; } // Ton bleibt optional
     master = ctx.createGain();
     master.gain.value = 0.35;
     master.connect(ctx.destination);
   }
-  if (ctx.state === 'suspended') ctx.resume();
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
 }
 
 export function setMuted(m) { muted = m; if (master) master.gain.value = m ? 0 : 0.35; }

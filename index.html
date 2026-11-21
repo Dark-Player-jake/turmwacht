@@ -11,7 +11,7 @@
 <main>
   <header class="bar">
     <h1>Turmwacht</h1>
-    <dl class="hud" aria-live="polite">
+    <dl class="hud">
       <div><dt>Welle</dt><dd id="hWave">0</dd></div>
       <div><dt>Gold</dt><dd id="hGold">0</dd></div>
       <div><dt>Leben</dt><dd id="hLives">20</dd></div>
@@ -19,13 +19,13 @@
     </dl>
     <div class="controls">
       <button id="speed" type="button" aria-pressed="false" title="Tempo (F)">2×</button>
-      <button id="mute" type="button" aria-pressed="false" title="Ton (M)">Ton aus</button>
+      <button id="mute" type="button" aria-pressed="false" title="Ton stumm (M)">Stumm</button>
       <button id="next" type="button" class="primary">Welle starten <kbd>Leer</kbd></button>
     </div>
   </header>
   <div class="stage">
     <div class="board">
-      <canvas id="board" width="960" height="576" aria-label="Spielfeld. Turm wählen, dann auf ein freies Feld klicken."></canvas>
+      <canvas id="board" width="960" height="576" tabindex="0" aria-label="Spielfeld. Turm wählen, dann auf ein freies Feld klicken, oder mit den Pfeiltasten bewegen und Enter drücken."></canvas>
       <div id="overlay" class="overlay" hidden></div>
     </div>
     <aside class="panel">

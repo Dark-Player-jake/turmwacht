@@ -13,8 +13,9 @@ ctx.scale(dpr, dpr);
 
 let g, deco, tool = null, selected = null, hover = null, fast = false, floats = [], started = false;
 const BEST_KEY = 'turmwacht.best.v1';
-const readBest = () => { try { return +localStorage.getItem(BEST_KEY) || 0; } catch { return 0; } };
-const writeBest = (v) => { try { localStorage.setItem(BEST_KEY, String(v)); } catch { /* Rekord nur für diese Sitzung */ } };
+let sessionBest = 0; // hält den Rekord, falls localStorage gesperrt ist
+const readBest = () => { let stored = 0; try { stored = +localStorage.getItem(BEST_KEY) || 0; } catch { /* nur Sitzung */ } return Math.max(stored, sessionBest); };
+const writeBest = (v) => { sessionBest = Math.max(sessionBest, v); try { localStorage.setItem(BEST_KEY, String(v)); } catch { /* Rekord nur für diese Sitzung */ } };
 
 function newGame(seed = (Math.random() * 1e9) | 0) {
   g = createGame(seed);
@@ -116,7 +117,7 @@ function doSell() {
   syncUI();
 }
 function toggleSpeed() { fast = !fast; $('speed').setAttribute('aria-pressed', String(fast)); }
-function toggleMute() { setMuted(!isMuted()); $('mute').setAttribute('aria-pressed', String(isMuted())); $('mute').textContent = isMuted() ? 'Ton an' : 'Ton aus'; }
+function toggleMute() { setMuted(!isMuted()); $('mute').setAttribute('aria-pressed', String(isMuted())); }
 
 function cellFromEvent(e) {
   const r = canvas.getBoundingClientRect();
@@ -124,9 +125,24 @@ function cellFromEvent(e) {
 }
 canvas.addEventListener('pointermove', (e) => { hover = cellFromEvent(e); });
 canvas.addEventListener('pointerleave', () => { hover = null; });
-canvas.addEventListener('click', (e) => {
-  unlock();
-  const [x, y] = cellFromEvent(e);
+canvas.addEventListener('click', (e) => { unlock(); actOnCell(...cellFromEvent(e)); });
+// Tastatur: Pfeiltasten bewegen einen Cursor übers Feld, Enter baut oder wählt aus
+canvas.addEventListener('focus', () => { if (!hover) hover = [Math.floor(COLS / 2), Math.floor(ROWS / 2)]; });
+canvas.addEventListener('keydown', (e) => {
+  const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+  if (d) {
+    e.preventDefault();
+    const [x, y] = hover ?? [0, 0];
+    hover = [Math.max(0, Math.min(COLS - 1, x + d[0])), Math.max(0, Math.min(ROWS - 1, y + d[1]))];
+    describeCell();
+  } else if (e.key === 'Enter' && hover) { e.preventDefault(); unlock(); actOnCell(...hover); describeCell(); }
+});
+function describeCell() {
+  const [x, y] = hover, t = g.towers.find((o) => o.x === x && o.y === y);
+  const what = t ? `${TOWERS[t.type].name}, Stufe ${t.level}` : g.onPath.has(y * COLS + x) ? 'Weg' : 'frei';
+  canvas.setAttribute('aria-label', `Feld Spalte ${x + 1}, Zeile ${y + 1}: ${what}. Pfeiltasten bewegen, Enter baut oder wählt aus.`);
+}
+function actOnCell(x, y) {
   const tower = g.towers.find((t) => t.x === x && t.y === y);
   if (tower) { selected = tower; tool = null; syncUI(); return; }
   if (tool) {
@@ -135,17 +151,15 @@ canvas.addEventListener('click', (e) => {
     else { play('error'); say(r.why); }
   } else selected = null;
   syncUI();
-});
+}
 
 addEventListener('keydown', (e) => {
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (!$('overlay').hidden) {
-    if ((e.key === 'Enter' || e.key === ' ') && overlayAction) { e.preventDefault(); overlayAction(); }
-    return;
-  }
+  if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+  // Im Overlay klicken Enter/Leertaste den fokussierten Knopf selbst; nichts abfangen
+  if (!$('overlay').hidden) return;
   const n = '1234'.indexOf(e.key);
   if (n >= 0) { unlock(); setTool(tool === order[n] ? null : order[n]); }
-  else if (e.key === ' ') { e.preventDefault(); $('next').click(); }
+  else if (e.key === ' ' && !e.target.closest('button, input, select')) { e.preventDefault(); $('next').click(); }
   else if (e.key === 'Escape') { tool = null; selected = null; syncUI(); }
   else if (e.key.toLowerCase() === 'u') doUpgrade();
   else if (e.key.toLowerCase() === 's') doSell();
@@ -154,26 +168,31 @@ addEventListener('keydown', (e) => {
 });
 
 // ---------- Overlays ----------
-let overlayAction = null;
-function showOverlay(html, action) {
+function showOverlay(html) {
   const o = $('overlay');
-  o.innerHTML = `<div class="card">${html}</div>`;
+  o.innerHTML = `<div class="card" role="dialog" aria-modal="true" aria-labelledby="ovTitle">${html.replace('<h3>', '<h3 id="ovTitle">')}</div>`;
   o.hidden = false;
-  overlayAction = action;
+  // Alles hinter dem Dialog ist solange nicht bedienbar
+  for (const el of document.querySelectorAll('.bar, .panel, #board')) el.inert = true;
+  $('msg').textContent = '';
   o.querySelector('button')?.focus();
 }
-function hideOverlay() { $('overlay').hidden = true; overlayAction = null; canvas.focus?.(); }
+function hideOverlay() {
+  $('overlay').hidden = true;
+  for (const el of document.querySelectorAll('.bar, .panel, #board')) el.inert = false;
+  canvas.focus();
+}
 
 function showStart() {
   showOverlay(`<h3>Turmwacht</h3><p>Jede Karte ist neu. Bau Türme neben den Weg, starte die Wellen und such dir alle fünf Wellen einen Segen aus. Wie weit kommst du?</p>
-    <button class="primary" id="go" type="button">Los geht's</button>`, begin);
+    <button class="primary" id="go" type="button">Los geht's</button>`);
   $('go').addEventListener('click', begin);
 }
 function begin() { unlock(); started = true; hideOverlay(); }
 
 function showPerks() {
   showOverlay(`<h3>Welle ${g.wave} geschafft</h3><p>Wähle einen Segen für den Rest der Partie.</p>
-    <div class="perk-pick">${g.perkChoice.map((p) => `<button type="button" data-id="${p.id}"><b>${p.name}</b><span>${p.desc}</span></button>`).join('')}</div>`, null);
+    <div class="perk-pick">${g.perkChoice.map((p) => `<button type="button" data-id="${p.id}"><b>${p.name}</b><span>${p.desc}</span></button>`).join('')}</div>`);
   for (const b of $('overlay').querySelectorAll('[data-id]')) b.addEventListener('click', () => {
     choosePerk(g, b.dataset.id); play('upgrade'); hideOverlay(); syncUI();
   });
@@ -185,7 +204,7 @@ function showOver() {
   if (record) writeBest(reached);
   showOverlay(`<h3>${record ? 'Neuer Rekord!' : 'Die Wacht ist gefallen'}</h3>
     <p>Du hast ${reached} ${reached === 1 ? 'Welle' : 'Wellen'} gehalten und ${g.kills} Gegner besiegt.</p>
-    <div class="row2"><button class="primary" id="again" type="button">Neue Karte</button><button id="same" type="button">Gleiche Karte</button></div>`, () => { newGame(); hideOverlay(); });
+    <div class="row2"><button class="primary" id="again" type="button">Neue Karte</button><button id="same" type="button">Gleiche Karte</button></div>`);
   $('again').addEventListener('click', () => { newGame(); hideOverlay(); });
   $('same').addEventListener('click', () => { newGame(g.seed); hideOverlay(); });
   syncUI();

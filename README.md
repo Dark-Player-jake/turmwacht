@@ -22,7 +22,7 @@ Dann `http://localhost:8000` öffnen.
 
 Bestimmte Karte spielen oder teilen: `?seed=1234` an die Adresse hängen.
 
-`1`–`4` Turm wählen · Klick aufs Feld baut · Klick auf Turm wählt ihn aus · `U` ausbauen · `S` verkaufen (70 %) · `Leertaste` nächste Welle · `F` Tempo · `M` Ton · `Esc` abwählen
+`1`–`4` Turm wählen · Klick aufs Feld baut (oder Spielfeld fokussieren, Pfeiltasten, `Enter`) · Klick auf Turm wählt ihn aus · `U` ausbauen · `S` verkaufen (70 %) · `Leertaste` nächste Welle · `F` Tempo · `M` Ton · `Esc` abwählen
 
 ## Tests
 
