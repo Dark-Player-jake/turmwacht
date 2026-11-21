@@ -127,7 +127,8 @@ canvas.addEventListener('pointermove', (e) => { hover = cellFromEvent(e); });
 canvas.addEventListener('pointerleave', () => { hover = null; });
 canvas.addEventListener('click', (e) => { unlock(); actOnCell(...cellFromEvent(e)); });
 // Tastatur: Pfeiltasten bewegen einen Cursor übers Feld, Enter baut oder wählt aus
-canvas.addEventListener('focus', () => { if (!hover) hover = [Math.floor(COLS / 2), Math.floor(ROWS / 2)]; });
+// Cursor nur bei Tastaturfokus in die Mitte setzen; nach Mausklick auf einen Dialogknopf keine Bauvorschau mitten im Feld
+canvas.addEventListener('focus', () => { if (!hover && canvas.matches(':focus-visible')) hover = [Math.floor(COLS / 2), Math.floor(ROWS / 2)]; });
 canvas.addEventListener('keydown', (e) => {
   const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
   if (d) {
@@ -168,13 +169,13 @@ addEventListener('keydown', (e) => {
 });
 
 // ---------- Overlays ----------
-function showOverlay(html) {
+function showOverlay(html, keepMsg = false) {
   const o = $('overlay');
   o.innerHTML = `<div class="card" role="dialog" aria-modal="true" aria-labelledby="ovTitle">${html.replace('<h3>', '<h3 id="ovTitle">')}</div>`;
   o.hidden = false;
   // Alles hinter dem Dialog ist solange nicht bedienbar
   for (const el of document.querySelectorAll('.bar, .panel, #board')) el.inert = true;
-  $('msg').textContent = '';
+  if (!keepMsg) $('msg').textContent = '';
   o.querySelector('button')?.focus();
 }
 function hideOverlay() {
@@ -192,7 +193,7 @@ function begin() { unlock(); started = true; hideOverlay(); }
 
 function showPerks() {
   showOverlay(`<h3>Welle ${g.wave} geschafft</h3><p>Wähle einen Segen für den Rest der Partie.</p>
-    <div class="perk-pick">${g.perkChoice.map((p) => `<button type="button" data-id="${p.id}"><b>${p.name}</b><span>${p.desc}</span></button>`).join('')}</div>`);
+    <div class="perk-pick">${g.perkChoice.map((p) => `<button type="button" data-id="${p.id}"><b>${p.name}</b><span>${p.desc}</span></button>`).join('')}</div>`, true);
   for (const b of $('overlay').querySelectorAll('[data-id]')) b.addEventListener('click', () => {
     choosePerk(g, b.dataset.id); play('upgrade'); hideOverlay(); syncUI();
   });
