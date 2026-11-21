@@ -20,6 +20,8 @@ Dann `http://localhost:8000` öffnen.
 
 ## Steuerung
 
+Bestimmte Karte spielen oder teilen: `?seed=1234` an die Adresse hängen.
+
 `1`–`4` Turm wählen · Klick aufs Feld baut · Klick auf Turm wählt ihn aus · `U` ausbauen · `S` verkaufen (70 %) · `Leertaste` nächste Welle · `F` Tempo · `M` Ton · `Esc` abwählen
 
 ## Tests
@@ -30,7 +32,7 @@ node --test
 
 Prüft Pfaderzeugung (300 Seeds: zusammenhängend, ohne Berührung), Bauen/Ausbau/Verkauf, Panzerung, Frost, Teiler, Perk-Wahl, Wellenwachstum und eine lange Partie auf numerische Stabilität.
 
-Balance wurde mit einem einfachen Bot gemessen (gierig bauen, ausbauen, ersten Segen nehmen): über 12 Karten erreicht er im Schnitt Welle 24 (12 bis 33).
+Balance wurde mit einem einfachen Bot gemessen (gierig bauen, ausbauen, ersten Segen nehmen): über 12 Karten erreicht er im Schnitt Welle 24 (11 bis 33). Die Streuung hängt nicht an der Weglänge (34–47 Felder), sondern an der stumpfen Bot-Strategie (feste Turmreihenfolge, auch Kanonen gegen frühe Flieger).
 
 ## Aufbau
 

@@ -177,3 +177,20 @@ function spotsNearPath(g) {
   }
   return out.sort((a, b) => b[2] - a[2]).map(([x, y]) => [x, y]);
 }
+
+test('Flächenschaden trifft die frisch entstandenen Schwarm-Gegner nicht im selben Schuss', () => {
+  const g = createGame(4);
+  g.wave = 10; g.gold = 1000;
+  const speed = ENEMIES.splitter.speed; ENEMIES.splitter.speed = 0;
+  g.spawnQueue = [{ k: 'splitter', at: 0 }]; g.waveActive = true;
+  update(g, 0.001);
+  const sp = g.enemies[0]; sp.hp = 1;
+  const [x, y] = [Math.floor(sp.x), Math.floor(sp.y)];
+  const spot = [[x, y - 1], [x, y + 1], [x + 1, y - 1], [x + 1, y + 1]].find(([a, b]) => canBuild(g, a, b));
+  placeTower(g, 'cannon', ...spot);
+  update(g, 0.001);
+  ENEMIES.splitter.speed = speed;
+  const kids = g.enemies.filter((e) => e.k === 'swarm');
+  assert.equal(kids.length, 3);
+  for (const k of kids) assert.equal(k.hp, k.max, 'Kinder unverletzt');
+});

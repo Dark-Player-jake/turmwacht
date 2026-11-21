@@ -224,7 +224,7 @@ function fire(g, t, events) {
   const cx = t.x + 0.5, cy = t.y + 0.5;
   if (t.type === 'frost') {
     let hit = false;
-    for (const en of g.enemies) {
+    for (const en of g.enemies.slice()) { // Kopie: Teiler fügen beim Tod neue Gegner hinzu
       if (!en.alive || Math.hypot(en.x - cx, en.y - cy) > s.range) continue;
       hit = true;
       en.slow = Math.max(en.slow * (en.slowUntil > g.time ? 1 : 0), s.slow);
@@ -243,7 +243,7 @@ function fire(g, t, events) {
     events.push({ type: 'arrow' });
   } else if (t.type === 'cannon') {
     const { x, y } = target;
-    for (const en of g.enemies) if (en.alive && !en.fly && Math.hypot(en.x - x, en.y - y) <= s.splash) damage(g, en, s.dmg, false, events);
+    for (const en of g.enemies.slice()) if (en.alive && !en.fly && Math.hypot(en.x - x, en.y - y) <= s.splash) damage(g, en, s.dmg, false, events);
     g.effects.push({ type: 'boom', x, y, r: s.splash, t: 0, life: 0.35 });
     events.push({ type: 'cannon' });
   } else if (t.type === 'tesla') {

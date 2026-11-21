@@ -55,6 +55,7 @@ button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-c
 .hint { margin: 0; font-size: 12px; color: var(--muted); }
 kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; background: var(--bg); }
 .msg { margin: 0; min-height: 1.2em; font-size: 13px; color: var(--warn); }
+.msg.ok { color: var(--accent); }
 @media (max-width: 900px) {
   .stage { grid-template-columns: 1fr; }
   .controls { margin-left: 0; width: 100%; }

@@ -67,7 +67,7 @@ function syncUI() {
   }
   const next = $('next');
   next.disabled = g.waveActive || g.over || !!g.perkChoice;
-  next.firstChild.textContent = g.waveActive ? `Welle ${g.wave} läuft ` : `Welle ${g.wave + 1} starten `;
+  next.firstChild.textContent = g.over ? 'Spiel vorbei ' : g.waveActive ? `Welle ${g.wave} läuft ` : `Welle ${g.wave + 1} starten `;
   if (selected && !g.towers.includes(selected)) selected = null;
   $('selPanel').hidden = !selected;
   if (selected) {
@@ -95,7 +95,7 @@ function syncUI() {
 }
 
 let msgTimer;
-function say(t) { $('msg').textContent = t; clearTimeout(msgTimer); msgTimer = setTimeout(() => ($('msg').textContent = ''), 2500); }
+function say(t, ok = false) { $('msg').textContent = t; $('msg').classList.toggle('ok', ok); clearTimeout(msgTimer); msgTimer = setTimeout(() => ($('msg').textContent = ''), 2500); }
 
 $('next').addEventListener('click', () => { unlock(); if (startWave(g)) { play('wave'); syncUI(); } });
 $('upgrade').addEventListener('click', doUpgrade);
@@ -385,12 +385,14 @@ function handle(ev) {
     case 'arrow': case 'cannon': case 'frost': case 'tesla': play(ev.type); break;
     case 'kill': play('kill'); floats.push({ x: ev.x, y: ev.y - 0.3, text: `+${ev.gold}`, t: 0 }); break;
     case 'leak': play('leak'); break;
-    case 'waveDone': play('waveDone'); say(`Welle geschafft: +${ev.bonus} Gold${ev.interest ? `, +${ev.interest} Zinsen` : ''}`); syncUI(); break;
+    case 'waveDone': play('waveDone'); say(`Welle geschafft: +${ev.bonus} Gold${ev.interest ? `, +${ev.interest} Zinsen` : ''}`, true); syncUI(); break;
     case 'perk': play('perk'); showPerks(); break;
     case 'over': play('over'); showOver(); break;
   }
 }
 
-newGame();
+// ?seed=123 spielt eine bestimmte Karte (zum Teilen und für Tests)
+const urlSeed = Number.parseInt(new URLSearchParams(location.search).get('seed'), 10);
+newGame(Number.isFinite(urlSeed) ? urlSeed : undefined);
 showStart();
 requestAnimationFrame(frame);
