@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turmwacht</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%2397a86b'/><rect x='5' y='3' width='6' height='10' fill='%23463f35'/><rect x='4' y='2' width='2' height='2' fill='%23463f35'/><rect x='10' y='2' width='2' height='2' fill='%23463f35'/></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="bar">
+    <h1>Turmwacht</h1>
+    <dl class="hud" aria-live="polite">
+      <div><dt>Welle</dt><dd id="hWave">0</dd></div>
+      <div><dt>Gold</dt><dd id="hGold">0</dd></div>
+      <div><dt>Leben</dt><dd id="hLives">20</dd></div>
+      <div><dt>Rekord</dt><dd id="hBest">–</dd></div>
+    </dl>
+    <div class="controls">
+      <button id="speed" type="button" aria-pressed="false" title="Tempo (F)">2×</button>
+      <button id="mute" type="button" aria-pressed="false" title="Ton (M)">Ton aus</button>
+      <button id="next" type="button" class="primary">Welle starten <kbd>Leer</kbd></button>
+    </div>
+  </header>
+  <div class="stage">
+    <div class="board">
+      <canvas id="board" width="960" height="576" aria-label="Spielfeld. Turm wählen, dann auf ein freies Feld klicken."></canvas>
+      <div id="overlay" class="overlay" hidden></div>
+    </div>
+    <aside class="panel">
+      <section>
+        <h2>Bauen</h2>
+        <div id="shop" class="shop"></div>
+      </section>
+      <section id="selPanel" hidden>
+        <h2 id="selTitle">Turm</h2>
+        <dl id="selStats" class="sel-stats"></dl>
+        <div class="seg" role="group" aria-label="Zielwahl" id="targets"></div>
+        <div class="row2">
+          <button id="upgrade" type="button">Ausbauen</button>
+          <button id="sell" type="button">Verkaufen</button>
+        </div>
+      </section>
+      <section>
+        <h2>Vorschau nächste Welle</h2>
+        <p id="preview" class="preview">–</p>
+      </section>
+      <section id="perkList" hidden>
+        <h2>Segen</h2>
+        <ul id="perks" class="perks"></ul>
+      </section>
+      <p class="hint"><kbd>1</kbd>–<kbd>4</kbd> Turm · <kbd>U</kbd> Ausbau · <kbd>S</kbd> Verkauf · <kbd>Esc</kbd> abwählen</p>
+      <p id="msg" class="msg" role="status" aria-live="polite"></p>
+    </aside>
+  </div>
+</main>
+<script type="module" src="main.mjs"></script>
+</body>
+</html>
