@@ -1,5 +1,7 @@
 # Turmwacht
 
+[Deutsche Fassung](README.de.md)
+
 **A roguelike tower defense game in the browser.** Every run has a new, randomly generated map.
 Every five waves you pick one of three blessings, and the rest of the run builds on that choice.
 The waves never end, and your best score is saved locally.
