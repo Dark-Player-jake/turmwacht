@@ -8,7 +8,9 @@ The waves never end, and your best score is saved locally.
 
 No build step, no dependencies, no audio files.
 
-<!-- TODO before going public: add docs/screenshot.png and a live demo link (e.g. GitHub Pages). -->
+![Turmwacht in wave 7 with eleven towers along the path](docs/screenshot.png)
+
+<!-- TODO before going public: add a live demo link (e.g. GitHub Pages). -->
 
 > [!NOTE]
 > The user interface is in German for now. Contributions for an English UI are welcome.
@@ -74,5 +76,4 @@ keep the game free of dependencies and external resources.
 
 ## License
 
-<!-- TODO: license not chosen yet (MIT proposed). Add a LICENSE file before making the repo public. -->
-Not decided yet.
+[MIT](LICENSE)

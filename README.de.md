@@ -2,6 +2,8 @@
 
 Tower Defense im Browser mit Roguelike-Anteil: Jede Partie hat eine neue, zufällig erzeugte Karte. Alle fünf Wellen wählst du einen von drei Segen, der Rest der Partie baut darauf auf. Die Wellen gehen endlos weiter, dein Rekord wird lokal gespeichert.
 
+![Turmwacht in Welle 7 mit elf Türmen am Weg](docs/screenshot.png)
+
 - **4 Türme** mit je 3 Ausbaustufen und Zielwahl (vorderster, stärkster, nächster): Bogen, Kanone (Fläche, keine Flieger), Frost (bremst), Blitz (Kettenschaden, ignoriert Panzerung)
 - **8 Gegnertypen**: Läufer, Fußvolk, Schwarm, Flieger (Luftlinie statt Weg), Panzer (Panzerung), Heiler (heilt Nachbarn), Teiler (zerfällt in Schwarm), Koloss (Boss alle 10 Wellen)
 - **9 Segen**, z. B. Zinsen, Kopfgeld, Überladung, Permafrost
@@ -39,3 +41,7 @@ Balance wurde mit einem einfachen Bot gemessen (gierig bauen, ausbauen, ersten S
 - `game.mjs` – Spiellogik ohne DOM (Karte, Wellen, Türme, Gegner, Segen)
 - `audio.mjs` – Klangsynthese
 - `main.mjs` – Zeichnen auf Canvas, Eingabe, Oberfläche
+
+## Lizenz
+
+[MIT](LICENSE)
