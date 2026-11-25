@@ -10,7 +10,7 @@ No build step, no dependencies, no audio files.
 
 ![Turmwacht in wave 7 with eleven towers along the path](docs/screenshot.png)
 
-<!-- TODO before going public: add a live demo link (e.g. GitHub Pages). -->
+**Live demo:** <https://dark-player-jake.github.io/turmwacht/>
 
 > [!NOTE]
 > The user interface is in German for now. Contributions for an English UI are welcome.

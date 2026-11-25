@@ -4,6 +4,8 @@ Tower Defense im Browser mit Roguelike-Anteil: Jede Partie hat eine neue, zufäl
 
 ![Turmwacht in Welle 7 mit elf Türmen am Weg](docs/screenshot.png)
 
+**Live-Demo:** <https://dark-player-jake.github.io/turmwacht/>
+
 - **4 Türme** mit je 3 Ausbaustufen und Zielwahl (vorderster, stärkster, nächster): Bogen, Kanone (Fläche, keine Flieger), Frost (bremst), Blitz (Kettenschaden, ignoriert Panzerung)
 - **8 Gegnertypen**: Läufer, Fußvolk, Schwarm, Flieger (Luftlinie statt Weg), Panzer (Panzerung), Heiler (heilt Nachbarn), Teiler (zerfällt in Schwarm), Koloss (Boss alle 10 Wellen)
 - **9 Segen**, z. B. Zinsen, Kopfgeld, Überladung, Permafrost
